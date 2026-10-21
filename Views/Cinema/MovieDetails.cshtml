@@ -1,0 +1,76 @@
+
+@using CinemaBookingMVC.Models
+@using CinemaBookingMVC.Extensions
+@model Booking
+
+@{
+    ViewData["Title"] = "Movie Details";
+    var movie = ViewBag.Movie as Movie;
+    var status = movie == null ? "Unknown" : Model.GetBookingStatus();
+    var total = movie == null ? 0 : Model.CalculateTotalAmount(movie);
+}
+
+<div class="container mt-4">
+    <h1>Movie and Booking Details</h1>
+
+    @if (movie == null)
+    {
+        <div class="alert alert-danger">
+            Movie details could not be found.
+        </div>
+    }
+    else
+    {
+        @if (status == "Cancelled")
+        {
+            <div class="alert alert-danger">This booking has been cancelled.</div>
+        }
+        else if (status == "Completed")
+        {
+            <div class="alert alert-success">This movie show has been completed.</div>
+        }
+        else if (status == "Today")
+        {
+            <div class="alert alert-warning">Your movie show is scheduled for today.</div>
+        }
+        else
+        {
+            <div class="alert alert-info">Your movie show is upcoming.</div>
+        }
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-dark text-white">
+                Customer Information
+            </div>
+            <div class="card-body">
+                <p><strong>Booking ID:</strong> @Model.BookingId</p>
+                <p><strong>Customer Name:</strong> @Model.CustomerName</p>
+                <p><strong>Email:</strong> @Model.Email</p>
+                <p><strong>Phone:</strong> @Model.Phone</p>
+                <p><strong>Booking Date:</strong> @Model.BookingDate.ToString("dd-MM-yyyy")</p>
+                <p><strong>Show Date:</strong> @Model.ShowDate.ToString("dd-MM-yyyy")</p>
+                <p><strong>Number of Tickets:</strong> @Model.NumberOfTickets</p>
+                <p><strong>Cancellation Date:</strong>
+                    @(Model.CancellationDate?.ToString("dd-MM-yyyy") ?? "Not cancelled")
+                </p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white">
+                Movie Information
+            </div>
+            <div class="card-body">
+                <p><strong>Movie Name:</strong> @movie.MovieName</p>
+                <p><strong>Genre:</strong> @movie.Genre</p>
+                <p><strong>Language:</strong> @movie.Language</p>
+                <p><strong>Ticket Price:</strong> ₹@movie.TicketPrice.ToString("0.00")</p>
+                <p><strong>Booking Status:</strong> @status</p>
+                <h4 class="mt-3">Total Amount: ₹@total.ToString("0.00")</h4>
+            </div>
+        </div>
+    }
+
+    <a asp-controller="Cinema" asp-action="Index"
+       class="btn btn-secondary">Back to Bookings</a>
+</div>

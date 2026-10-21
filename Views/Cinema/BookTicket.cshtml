@@ -1,0 +1,104 @@
+
+@using CinemaBookingMVC.Models
+@model Booking
+
+@{
+    ViewData["Title"] = "Book a Ticket";
+    var movies = ViewBag.Movies as List<Movie> ?? new List<Movie>();
+}
+
+<div class="container mt-4 mb-5">
+    <h1>Book Movie Tickets</h1>
+    <p class="text-muted">Enter your details to reserve your seats.</p>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form asp-controller="Cinema" asp-action="BookTicket" method="post">
+
+                <div asp-validation-summary="ModelOnly"
+                     class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label asp-for="CustomerName" class="form-label">
+                        Customer Name
+                    </label>
+                    <input asp-for="CustomerName"
+                           class="form-control"
+                           placeholder="Enter your full name" />
+                    <span asp-validation-for="CustomerName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control"
+                           placeholder="example@email.com" />
+                    <span asp-validation-for="Email"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Phone" class="form-label">Phone</label>
+                    <input asp-for="Phone" class="form-control"
+                           placeholder="Enter your phone number" />
+                    <span asp-validation-for="Phone"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="MovieId" class="form-label">
+                        Select Movie
+                    </label>
+                    <select asp-for="MovieId" class="form-select">
+                        <option value="">-- Select a movie --</option>
+                        @foreach (var movie in movies)
+                        {
+                            <option value="@movie.MovieId">
+                                @movie.MovieName - ₹@movie.TicketPrice
+                                (@movie.AvailableSeats seats available)
+                            </option>
+                        }
+                    </select>
+                    <span asp-validation-for="MovieId"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="ShowDate" class="form-label">
+                        Show Date
+                    </label>
+                    <input asp-for="ShowDate" type="date"
+                           class="form-control"
+                           min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="ShowDate"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="NumberOfTickets" class="form-label">
+                        Number of Tickets
+                    </label>
+                    <input asp-for="NumberOfTickets" type="number"
+                           class="form-control" min="1" max="10" />
+                    <span asp-validation-for="NumberOfTickets"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        Confirm Booking
+                    </button>
+
+                    <a asp-controller="Cinema" asp-action="Index"
+                       class="btn btn-secondary">
+                        Back to Bookings
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

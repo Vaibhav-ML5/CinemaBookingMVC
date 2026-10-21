@@ -1,0 +1,38 @@
+
+@{
+    ViewData["Title"] = "About Cinema";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <h1 class="mb-3">About Our Cinema</h1>
+
+            <p>
+                Welcome to our Cinema Ticket Booking System.
+                Our goal is to make booking movie tickets simple and convenient.
+            </p>
+
+            <h4 class="mt-4">Our Features</h4>
+            <ul>
+                <li>View available movies.</li>
+                <li>Book tickets online.</li>
+                <li>View customer and movie booking details.</li>
+                <li>Calculate the total ticket amount automatically.</li>
+                <li>Check booking status and show dates.</li>
+            </ul>
+
+            <p>
+                Our cinema offers movies in different genres and languages
+                to provide an enjoyable experience for everyone.
+            </p>
+
+            <a asp-controller="Cinema" asp-action="Index"
+               class="btn btn-primary">Back to Home</a>
+
+            <a asp-controller="Cinema" asp-action="BookTicket"
+               class="btn btn-outline-primary">Book Tickets</a>
+        </div>
+    </div>
+</div>
+s

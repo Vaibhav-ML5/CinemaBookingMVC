@@ -1,0 +1,134 @@
+
+@using CinemaBookingMVC.Models
+@using CinemaBookingMVC.Extensions
+@model IEnumerable<Booking>
+
+@{
+    ViewData["Title"] = "Cinema Bookings";
+    var movies = ViewBag.Movies as List<Movie> ?? new List<Movie>();
+}
+
+<div class="container mt-4">
+    <h1 class="mb-3">Cinema Ticket Booking System</h1>
+    <p class="text-muted">View and manage your movie bookings.</p>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <div class="mb-3">
+        <a asp-controller="Cinema" asp-action="BookTicket"
+           class="btn btn-primary">Book a Ticket</a>
+
+        <a asp-controller="Cinema" asp-action="About"
+           class="btn btn-outline-secondary">About Cinema</a>
+    </div>
+
+    <h3 class="mt-4">Booking List</h3>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            No bookings yet. Click "Book a Ticket" to create your first booking.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Customer</th>
+                        <th>Movie</th>
+                        <th>Show Date</th>
+                        <th>Tickets</th>
+                        <th>Booking Status</th>
+                        <th>Total Amount</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model)
+                    {
+                        var movie = movies.FirstOrDefault(
+                            m => m.MovieId == booking.MovieId);
+
+                        if (movie != null)
+                        {
+                            var status = booking.GetBookingStatus();
+                            var total = booking.CalculateTotalAmount(movie);
+
+                            <tr>
+                                <td>@booking.CustomerName</td>
+                                <td>@movie.MovieName</td>
+                                <td>@booking.ShowDate.ToString("dd-MM-yyyy")</td>
+                                <td>@booking.NumberOfTickets</td>
+                                <td>
+                                    @if (status == "Cancelled")
+                                    {
+                                        <span class="badge bg-danger">Cancelled</span>
+                                    }
+                                    else if (status == "Completed")
+                                    {
+                                        <span class="badge bg-success">Completed</span>
+                                    }
+                                    else if (status == "Today")
+                                    {
+                                        <span class="badge bg-warning text-dark">Today</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info text-dark">Upcoming</span>
+                                    }
+                                </td>
+                                <td>₹@total.ToString("0.00")</td>
+                                <td>
+                                    <a asp-controller="Cinema"
+                                       asp-action="MovieDetails"
+                                       asp-route-id="@booking.BookingId"
+                                       class="btn btn-sm btn-info">
+                                        Movie Details
+                                    </a>
+                                </td>
+                            </tr>
+
+                            @if (status == "Today")
+                            {
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-warning mb-0">
+                                            The movie show is scheduled for today.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            else if (status == "Cancelled")
+                            {
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-danger mb-0">
+                                            This booking has been cancelled.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            else if (status == "Upcoming")
+                            {
+                                <tr>
+                                    <td colspan="7">
+                                        <div class="alert alert-info mb-0">
+                                            Your movie show is upcoming.
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
